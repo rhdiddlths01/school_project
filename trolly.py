@@ -102,9 +102,7 @@ else :
     younger_people = result_2
 
 
-# We need the activation of our fuzzy membership functions at these values.
-# The exact values 6.5 and 9.8 do not exist on our universes...
-# This is what fuzz.interp_membership exists for!
+# Activation
 number_level_lo = fuzz.interp_membership(x_number, number_lo, Mydata_number)
 number_level_md = fuzz.interp_membership(x_number, number_md, Mydata_number)
 number_level_hi = fuzz.interp_membership(x_number, number_hi, Mydata_number)
@@ -117,22 +115,18 @@ age_level_lo = fuzz.interp_membership(x_age, age_lo, Mydata_age)
 age_level_md = fuzz.interp_membership(x_age, age_md, Mydata_age)
 age_level_hi = fuzz.interp_membership(x_age, age_hi, Mydata_age)
 
+result_activation_1 = np.fmin(number_level_hi, more_people)
 
-result_activation_1 = np.fmin(number_level_hi, more_people)  # removed entirely to 0
-
-# For rule 2 we connect acceptable service to medium tipping
 result_activation_2 = np.fmin(intervention_level_hi, result_1)
 
-# For rule 3 we connect high service OR high food with high tipping
 result_activation_3 = np.fmin(age_level_hi, younger_people)
 
-# Aggregate all three output membership functions together
+# Aggregate
 aggregated = np.fmax(result_activation_1,
                      np.fmax(result_activation_2, result_activation_3))
 
 x_result_array = np.arange(0, 2, 0.1)
 
-# Calculate defuzzified result
 result = fuzz.defuzz(x_result_array, aggregated, 'centroid')
 rounded_result = round(result*100, 1)
 
@@ -148,7 +142,7 @@ print(result_string)
 
 
 #visualization
-result_activation = fuzz.interp_membership(x_result, aggregated, result)  # for plot
+result_activation = fuzz.interp_membership(x_result, aggregated, result)
 
 fig, ax0 = plt.subplots(figsize=(8, 3))
 
